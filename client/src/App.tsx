@@ -2,10 +2,9 @@ import React, { ChangeEvent, useEffect, useState } from "react";
 import "./App.css";
 import Station from "./components/station";
 
-interface IStation {
+export interface IStation {
   lon: number;
   lat: number;
-  capacity: number;
   station_id: string;
   // station_type: string;
   // region_id: number;

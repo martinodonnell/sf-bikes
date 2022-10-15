@@ -1,11 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
+import { IStation } from "../App";
 
-interface IStation {
-  lon: number;
-  lat: number;
-  capacity: number;
-  station_id: string;
-}
 interface IStationStatus {
   is_installed: number;
   is_renting: number;
@@ -60,7 +55,6 @@ function Station({ station }: { station: IStation }) {
       key={station.station_id}
       className={`max-w-sm rounded overflow-hidden shadow-lg p-5 my-2 ${statusClassName()}`}
     >
-      <p>Capacity: {station.capacity}</p>
       <p>lat: {station.lat}</p>
       <p>lon: {station.lon}</p>
       {stationStatus === undefined ? (
