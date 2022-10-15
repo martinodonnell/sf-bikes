@@ -45,7 +45,11 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="container mx-auto px-4">
+      <h1 className="font-medium leading-tight text-5xl mt-0 mb-2 text-black-600">
+        Lyft Stations
+      </h1>
+
       <div className="flex flex-col">
         {stations === undefined ? (
           <p>Loading</p>
@@ -62,9 +66,11 @@ function App() {
               />
             </label>
             <h1>Stations: {stations.length}</h1>
-            {stations.map((station) => (
-              <Station station={station} />
-            ))}
+            <div className="grid grid-cols-4 gap-4">
+              {stations.map((station) => (
+                <Station station={station} />
+              ))}
+            </div>
           </div>
         )}
       </div>

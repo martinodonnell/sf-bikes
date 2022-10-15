@@ -46,6 +46,8 @@ function Station({ station }: { station: IStation }) {
       } else {
         return "bg-red-200";
       }
+    } else {
+      return "bg-green-200";
     }
   };
 
@@ -56,9 +58,9 @@ function Station({ station }: { station: IStation }) {
   return (
     <div
       key={station.station_id}
-      className={`max-w-sm rounded overflow-hidden shadow-lg my-5 ${statusClassName()}`}
+      className={`max-w-sm rounded overflow-hidden shadow-lg p-5 my-2 ${statusClassName()}`}
     >
-      <p>capacity: {station.capacity}</p>
+      <p>Capacity: {station.capacity}</p>
       <p>lat: {station.lat}</p>
       <p>lon: {station.lon}</p>
       {stationStatus === undefined ? (
