@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IStation } from "../App";
 
 interface IStationStatus {
@@ -16,7 +16,13 @@ interface IStationStatus {
   station_status: string;
 }
 
-function Station({ station }: { station: IStation }) {
+function Station({
+  station,
+  freeElectric,
+}: {
+  station: IStation;
+  freeElectric: boolean;
+}) {
   const [stationStatus, setStationStatus] = useState<
     undefined | null | IStationStatus
   >();
@@ -50,6 +56,17 @@ function Station({ station }: { station: IStation }) {
     return stat.station_id === station.station_id;
   };
 
+  if (stationStatus == undefined || stationStatus === null) {
+    return <></>;
+  }
+
+  if (
+    (freeElectric && stationStatus.num_bikes_available !== 0) ||
+    stationStatus.num_ebikes_available === 0
+  ) {
+    return <></>;
+  }
+
   return (
     <div
       key={station.station_id}
@@ -64,7 +81,10 @@ function Station({ station }: { station: IStation }) {
       ) : (
         <div>
           <p>E Bikes {stationStatus.num_ebikes_available}</p>
-          <p>Bikes {stationStatus.num_bikes_available}</p>
+          <p>real Bikes {stationStatus.num_bikes_available}</p>
+          <p>
+            Free Bike? {stationStatus.num_bikes_available === 0 ? "Yes" : "no"}
+          </p>
         </div>
       )}
     </div>

@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import "./App.css";
 import Station from "./components/station";
+import Map from "./components/map";
 
 export interface IStation {
   lon: number;
@@ -23,6 +24,7 @@ function App() {
 
   const [distance, setDistance] = useState<number>(1);
   const [stations, setStations] = useState<IStation[] | undefined>();
+  const [freeElectric, setFreeElectric] = useState<boolean>(true);
 
   useEffect(() => {
     fetch("https://gbfs.baywheels.com/gbfs/fr/station_information.json")
@@ -43,6 +45,10 @@ function App() {
     );
   };
 
+  const radioHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFreeElectric(event.target.value === "1" ? true : false);
+  };
+
   return (
     <div className="container mx-auto px-4">
       <h1 className="font-medium leading-tight text-5xl mt-0 mb-2 text-black-600">
@@ -54,6 +60,7 @@ function App() {
           <p>Loading</p>
         ) : (
           <div>
+            <Map currentLocation={currentLocation} stations={stations} />
             <label>
               Distance:
               <input
@@ -64,10 +71,39 @@ function App() {
                 type="number"
               />
             </label>
+
+            <fieldset>
+              <legend>Do you want to limit by free bikes</legend>
+              <p>
+                <input
+                  type="radio"
+                  value={0}
+                  id="no"
+                  onChange={radioHandler}
+                  checked={!freeElectric}
+                />
+                <label htmlFor="no">No</label>
+              </p>
+
+              <p>
+                <input
+                  type="radio"
+                  value={1}
+                  id="yes"
+                  onChange={radioHandler}
+                  checked={freeElectric}
+                />
+                <label htmlFor="yes">Yes</label>
+              </p>
+            </fieldset>
             <h1>Stations: {stations.length}</h1>
             <div className="grid grid-cols-4 gap-4">
-              {stations.map((station) => (
-                <Station station={station} />
+              {stations.map((station, index) => (
+                <Station
+                  station={station}
+                  key={index}
+                  freeElectric={freeElectric}
+                />
               ))}
             </div>
           </div>
