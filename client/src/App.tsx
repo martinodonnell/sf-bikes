@@ -3,7 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 
 interface IUser {
-  users: [String] | undefined;
+  users: string[] | undefined;
 }
 
 function App() {
@@ -23,8 +23,8 @@ function App() {
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
 
       <div className="flex flex-col">
-        {"users" in backendText && Object.keys(backendText).length > 0 ? (
-          <p>{backendText["users"]}</p>
+        {backendText.users !== undefined ? (
+          backendText["users"].map((user, key) => <div key={key}>{user}</div>)
         ) : (
           <p>Loading</p>
         )}
