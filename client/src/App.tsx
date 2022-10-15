@@ -1,37 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import logo from "./logo.svg";
+import "./App.css";
 
 interface IUser {
   users: [String] | undefined;
 }
 
 function App() {
-
-  const [backendText, setBackendText] = useState<IUser>({users: undefined})
+  const [backendText, setBackendText] = useState<IUser>({ users: undefined });
 
   useEffect(() => {
-    fetch('/api').then(
-      response => response.json()
-    ).then(
-      text => {
-        console.log(text)
-        setBackendText(text)
-      }
-    )
-  },[])
+    fetch("/api")
+      .then((response) => response.json())
+      .then((text) => {
+        console.log(text);
+        setBackendText(text);
+      });
+  }, []);
 
   return (
     <div>
-    {('users' in backendText && Object.keys(backendText).length > 0)  ? (
-      <div>
-        <p>{backendText['users']}</p>
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+
+      <div className="flex flex-col">
+        {"users" in backendText && Object.keys(backendText).length > 0 ? (
+          <p>{backendText["users"]}</p>
+        ) : (
+          <p>Loading</p>
+        )}
       </div>
-      ) : (
-      <p>Loading</p>
-    )}
     </div>
-  )
+  );
 }
 
 export default App;
