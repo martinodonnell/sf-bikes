@@ -59,52 +59,60 @@ function App() {
         {stations === undefined ? (
           <p>Loading</p>
         ) : (
-          <div>
-            <Map currentLocation={currentLocation} stations={stations} />
-            <label>
-              Distance:
-              <input
-                value={distance}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setDistance(parseFloat(e.target.value))
-                }
-                type="number"
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Map
+                currentLocation={currentLocation}
+                stations={stations}
+                distance={distance}
               />
-            </label>
-
-            <fieldset>
-              <legend>Do you want to limit by free bikes</legend>
-              <p>
+            </div>
+            <div>
+              <label>
+                Distance:
                 <input
-                  type="radio"
-                  value={0}
-                  id="no"
-                  onChange={radioHandler}
-                  checked={!freeElectric}
+                  value={distance}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setDistance(parseFloat(e.target.value))
+                  }
+                  type="number"
                 />
-                <label htmlFor="no">No</label>
-              </p>
+              </label>
 
-              <p>
-                <input
-                  type="radio"
-                  value={1}
-                  id="yes"
-                  onChange={radioHandler}
-                  checked={freeElectric}
-                />
-                <label htmlFor="yes">Yes</label>
-              </p>
-            </fieldset>
-            <h1>Stations: {stations.length}</h1>
-            <div className="grid grid-cols-4 gap-4">
-              {stations.map((station, index) => (
-                <Station
-                  station={station}
-                  key={index}
-                  freeElectric={freeElectric}
-                />
-              ))}
+              <fieldset>
+                <legend>Do you want to limit by free bikes</legend>
+                <p>
+                  <input
+                    type="radio"
+                    value={0}
+                    id="no"
+                    onChange={radioHandler}
+                    checked={!freeElectric}
+                  />
+                  <label htmlFor="no">No</label>
+                </p>
+
+                <p>
+                  <input
+                    type="radio"
+                    value={1}
+                    id="yes"
+                    onChange={radioHandler}
+                    checked={freeElectric}
+                  />
+                  <label htmlFor="yes">Yes</label>
+                </p>
+              </fieldset>
+              <h1>Stations: {stations.length}</h1>
+              <div className="grid grid-cols-4 gap-4">
+                {stations.map((station, index) => (
+                  <Station
+                    station={station}
+                    key={index}
+                    freeElectric={freeElectric}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}
