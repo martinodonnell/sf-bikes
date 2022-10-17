@@ -133,7 +133,7 @@ function App() {
         <p>Loading</p>
       ) : (
         <div>
-          <div className="p-4 absolute right-3 top-3 flex items-center justify-center z-20 bg-green-500 shadow-lg rounded-lg">
+          <div className="p-4 absolute right-3 top-3 flex items-center justify-center z-20 bg-white shadow-lg rounded-lg border border-black">
             <div className="flex flex-col">
               <div className="pb-2 flex flex-col">
                 <label>Distance:</label>
