@@ -11,7 +11,6 @@ interface IMap {
 function Map({ currentLocation, stations, distance }: IMap) {
   return (
     <div className="h-96">
-      <h1>map</h1>
       <MapContainer
         center={[currentLocation.lat, currentLocation.lon]}
         zoom={15}

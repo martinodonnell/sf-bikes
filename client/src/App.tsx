@@ -27,8 +27,10 @@ export interface IStationStatus {
 
 function App() {
   const oneKmToGeocoding = 110.574;
-  const currentLocation = { lat: 37.78392060267635, lon: -122.43219948406649 };
-
+  const [currentLocation, setCurrentLocation] = useState({
+    lat: 37.78392060267635,
+    lon: -122.43219948406649,
+  });
   const [distance, setDistance] = useState<number>(1);
   const [stations, setStations] = useState<IStation[] | undefined>();
   const [freeElectric, setFreeElectric] = useState<boolean>(false);
@@ -59,6 +61,37 @@ function App() {
         })
       );
     });
+  }, []);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.permissions
+        .query({ name: "geolocation" })
+        .then(function (result) {
+          if (result.state === "granted") {
+            console.log(result.state);
+            //If granted then you can directly call your function here
+          } else if (result.state === "prompt") {
+            console.log(result.state);
+          } else if (result.state === "denied") {
+            //If denied then you have to show instructions to enable location
+          }
+          result.onchange = function () {
+            console.log(result.state);
+          };
+        });
+    } else {
+      alert("Sorry Not available!");
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setCurrentLocation({ lat: coords.latitude, lon: coords.longitude });
+      },
+      (error) => {
+        console.log("Error while getting coordinates. Keeping middle", error);
+      }
+    );
   }, []);
 
   const distanceCalculator = () => distance / oneKmToGeocoding;
