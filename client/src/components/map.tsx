@@ -10,7 +10,7 @@ interface IMap {
 }
 function Map({ currentLocation, stations, distance }: IMap) {
   return (
-    <div className="h-96">
+    <div className="absolute top-0 bottom-0 w-full z-10">
       <MapContainer
         center={[currentLocation.lat, currentLocation.lon]}
         zoom={15}

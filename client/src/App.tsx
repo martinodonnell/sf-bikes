@@ -128,26 +128,15 @@ function App() {
     : [];
 
   return (
-    <div className="container mx-auto px-4">
-      <h1 className="font-medium leading-tight text-5xl mt-0 mb-2 text-black-600">
-        Lyft Stations
-      </h1>
-
-      <div className="flex flex-col">
-        {filteredStations === undefined ? (
-          <p>Loading</p>
-        ) : (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Map
-                currentLocation={currentLocation}
-                stations={filteredStations}
-                distance={distance}
-              />
-            </div>
-            <div>
-              <label>
-                Distance:
+    <div>
+      {filteredStations === undefined ? (
+        <p>Loading</p>
+      ) : (
+        <div>
+          <div className="p-4 absolute right-3 top-3 flex items-center justify-center z-20 bg-green-500 shadow-lg rounded-lg">
+            <div className="flex flex-col">
+              <div className="pb-2 flex flex-col">
+                <label>Distance:</label>
                 <input
                   value={distance}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
@@ -155,42 +144,48 @@ function App() {
                   }
                   type="number"
                 />
-              </label>
+              </div>
+              <div>
+                <fieldset>
+                  <legend>Do you want to limit by free bikes</legend>
+                  <div className="flex">
+                    <p className="pr-2">
+                      <input
+                        type="radio"
+                        value={0}
+                        id="no"
+                        onChange={radioHandler}
+                        checked={!freeElectric}
+                      />
+                      <label htmlFor="no" className="pl-2">
+                        No
+                      </label>
+                    </p>
 
-              <fieldset>
-                <legend>Do you want to limit by free bikes</legend>
-                <p>
-                  <input
-                    type="radio"
-                    value={0}
-                    id="no"
-                    onChange={radioHandler}
-                    checked={!freeElectric}
-                  />
-                  <label htmlFor="no">No</label>
-                </p>
-
-                <p>
-                  <input
-                    type="radio"
-                    value={1}
-                    id="yes"
-                    onChange={radioHandler}
-                    checked={freeElectric}
-                  />
-                  <label htmlFor="yes">Yes</label>
-                </p>
-              </fieldset>
-              <h1>Stations: {filteredStations.length}</h1>
-              <div className="grid grid-cols-4 gap-4">
-                {filteredStations.map((station, index) => (
-                  <Station station={station} key={index} />
-                ))}
+                    <p>
+                      <input
+                        type="radio"
+                        value={1}
+                        id="yes"
+                        onChange={radioHandler}
+                        checked={freeElectric}
+                      />
+                      <label htmlFor="yes" className="pl-2">
+                        Yes
+                      </label>
+                    </p>
+                  </div>
+                </fieldset>
               </div>
             </div>
           </div>
-        )}
-      </div>
+          <Map
+            currentLocation={currentLocation}
+            stations={filteredStations}
+            distance={distance}
+          />
+        </div>
+      )}
     </div>
   );
 }
