@@ -7,15 +7,22 @@ export interface IStation {
   lon: number;
   lat: number;
   station_id: string;
-  // station_type: string;
-  // region_id: number;
-  // has_kiosk: boolean;
-  // eightd_station_services: string[];
-  // name: String;
-  // rental_methods: string[];
-  // rental_uris: {};
-  // short_name: string;
-  // electric_bike_surcharge_waiver: boolean;
+  status: IStationStatus | undefined;
+}
+
+export interface IStationStatus {
+  is_installed: number;
+  is_renting: number;
+  is_returning: number;
+  num_bikes_available: number;
+  num_bikes_disabled: number;
+  num_docks_available: number;
+  num_docks_disabled: number;
+  num_ebikes_available: number;
+  num_scooters_available: number;
+  num_scooters_unavailable: number;
+  station_id: string;
+  station_status: string;
 }
 
 function App() {
@@ -24,19 +31,42 @@ function App() {
 
   const [distance, setDistance] = useState<number>(1);
   const [stations, setStations] = useState<IStation[] | undefined>();
-  const [freeElectric, setFreeElectric] = useState<boolean>(true);
+  const [freeElectric, setFreeElectric] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch("https://gbfs.baywheels.com/gbfs/fr/station_information.json")
+    const tempStations = fetch(
+      "https://gbfs.baywheels.com/gbfs/fr/station_information.json"
+    )
       .then((response) => response.json())
       .then((data) => {
-        setStations(data.data.stations.filter(withinXKM));
+        return data.data.stations;
       });
-  }, [distance]);
+    const tempStatus = fetch(
+      "https://gbfs.baywheels.com/gbfs/en/station_status.json"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        return data.data.stations;
+      });
+
+    Promise.all([tempStations, tempStatus]).then((data) => {
+      setStations(
+        data[0].map((station: IStation) => {
+          station.status = data[1].filter(
+            (status: IStationStatus) => status.station_id === station.station_id
+          )[0];
+          return station;
+        })
+      );
+    });
+  }, []);
 
   const distanceCalculator = () => distance / oneKmToGeocoding;
 
-  const withinXKM = ({ lat, lon }: IStation) => {
+  const withinXKMFilter = ({ lat, lon }: IStation) => {
+    if (Number.isNaN(distance)) {
+      return false;
+    }
     return (
       currentLocation.lon - distanceCalculator() <= lon &&
       lon <= currentLocation.lon + distanceCalculator() &&
@@ -45,9 +75,24 @@ function App() {
     );
   };
 
+  const freeElectricFilter = (station: IStation) => {
+    if (station.status === undefined || !freeElectric) {
+      return true;
+    }
+
+    return (
+      station.status.num_bikes_available === 0 &&
+      station.status.num_ebikes_available > 0
+    );
+  };
+
   const radioHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFreeElectric(event.target.value === "1" ? true : false);
   };
+
+  const filteredStations = !Number.isNaN(distance)
+    ? stations?.filter(withinXKMFilter).filter(freeElectricFilter)
+    : [];
 
   return (
     <div className="container mx-auto px-4">
@@ -56,14 +101,14 @@ function App() {
       </h1>
 
       <div className="flex flex-col">
-        {stations === undefined ? (
+        {filteredStations === undefined ? (
           <p>Loading</p>
         ) : (
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Map
                 currentLocation={currentLocation}
-                stations={stations}
+                stations={filteredStations}
                 distance={distance}
               />
             </div>
@@ -103,14 +148,10 @@ function App() {
                   <label htmlFor="yes">Yes</label>
                 </p>
               </fieldset>
-              <h1>Stations: {stations.length}</h1>
+              <h1>Stations: {filteredStations.length}</h1>
               <div className="grid grid-cols-4 gap-4">
-                {stations.map((station, index) => (
-                  <Station
-                    station={station}
-                    key={index}
-                    freeElectric={freeElectric}
-                  />
+                {filteredStations.map((station, index) => (
+                  <Station station={station} key={index} />
                 ))}
               </div>
             </div>

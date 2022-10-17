@@ -29,14 +29,18 @@ function Map({ currentLocation, stations, distance }: IMap) {
           stroke={false}
         />
 
-        <Circle
-          center={[currentLocation.lat, currentLocation.lon]}
-          pathOptions={{ fillColor: "blue", fillOpacity: 0.1 }}
-          radius={distance * 1100}
-          stroke={false}
-        />
-        {stations.map((station) => (
+        {distance && (
           <Circle
+            center={[currentLocation.lat, currentLocation.lon]}
+            pathOptions={{ fillColor: "blue", fillOpacity: 0.1 }}
+            radius={distance * 1100}
+            stroke={false}
+          />
+        )}
+
+        {stations.map((station, key) => (
+          <Circle
+            key={key}
             center={[station.lat, station.lon]}
             pathOptions={{ fillColor: "red", fillOpacity: 0.5 }}
             radius={50}

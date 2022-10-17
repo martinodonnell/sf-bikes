@@ -1,48 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { IStation } from "../App";
 
-interface IStationStatus {
-  is_installed: number;
-  is_renting: number;
-  is_returning: number;
-  num_bikes_available: number;
-  num_bikes_disabled: number;
-  num_docks_available: number;
-  num_docks_disabled: number;
-  num_ebikes_available: number;
-  num_scooters_available: number;
-  num_scooters_unavailable: number;
-  station_id: string;
-  station_status: string;
-}
-
-function Station({
-  station,
-  freeElectric,
-}: {
-  station: IStation;
-  freeElectric: boolean;
-}) {
-  const [stationStatus, setStationStatus] = useState<
-    undefined | null | IStationStatus
-  >();
-
-  useEffect(() => {
-    fetch("https://gbfs.baywheels.com/gbfs/en/station_status.json")
-      .then((response) => response.json())
-      .then((data) => {
-        const filteredStations = data.data.stations.filter(filterStations);
-        if (filteredStations !== undefined && filteredStations.length === 1) {
-          setStationStatus(filteredStations[0]);
-        } else {
-          setStationStatus(null);
-        }
-      });
-  }, []);
-
+function Station({ station }: { station: IStation }) {
+  const { status } = station;
   const statusClassName = () => {
-    if (stationStatus !== null && stationStatus !== undefined) {
-      if (stationStatus.station_status === "active") {
+    if (status !== null && status !== undefined) {
+      if (status.station_status === "active") {
         return "bg-green-200";
       } else {
         return "bg-red-200";
@@ -52,21 +15,6 @@ function Station({
     }
   };
 
-  const filterStations = (stat: IStation) => {
-    return stat.station_id === station.station_id;
-  };
-
-  if (stationStatus == undefined || stationStatus === null) {
-    return <></>;
-  }
-
-  if (
-    (freeElectric && stationStatus.num_bikes_available !== 0) ||
-    stationStatus.num_ebikes_available === 0
-  ) {
-    return <></>;
-  }
-
   return (
     <div
       key={station.station_id}
@@ -74,19 +22,11 @@ function Station({
     >
       <p>lat: {station.lat}</p>
       <p>lon: {station.lon}</p>
-      {stationStatus === undefined ? (
-        <p>Loading status</p>
-      ) : stationStatus === null ? (
-        <p>Not found</p>
-      ) : (
-        <div>
-          <p>E Bikes {stationStatus.num_ebikes_available}</p>
-          <p>real Bikes {stationStatus.num_bikes_available}</p>
-          <p>
-            Free Bike? {stationStatus.num_bikes_available === 0 ? "Yes" : "no"}
-          </p>
-        </div>
-      )}
+      <div>
+        <p>E Bikes {status?.num_ebikes_available}</p>
+        <p>real Bikes {status?.num_bikes_available}</p>
+        <p>Free Bike? {status?.num_bikes_available === 0 ? "Yes" : "no"}</p>
+      </div>
     </div>
   );
 }
