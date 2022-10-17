@@ -69,19 +69,19 @@ function App() {
         .query({ name: "geolocation" })
         .then(function (result) {
           if (result.state === "granted") {
-            console.log(result.state);
+            console.log("geocoding", result.state);
             //If granted then you can directly call your function here
           } else if (result.state === "prompt") {
-            console.log(result.state);
+            console.log("geocoding", result.state);
           } else if (result.state === "denied") {
             //If denied then you have to show instructions to enable location
           }
           result.onchange = function () {
-            console.log(result.state);
+            console.log("geocoding", result.state);
           };
         });
     } else {
-      alert("Sorry Not available!");
+      alert("Sorry  Geocoding Not available!");
     }
 
     navigator.geolocation.getCurrentPosition(
@@ -143,6 +143,7 @@ function App() {
                     setDistance(parseFloat(e.target.value))
                   }
                   type="number"
+                  className="border border-black"
                 />
               </div>
               <div>
